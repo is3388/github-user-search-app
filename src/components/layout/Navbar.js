@@ -17,8 +17,6 @@ function Navbar({title}) {
                         <Link to ='/' className='btn btn-ghost btn-sm rounded-btn'>
                             Home
                         </Link>
-                    </div>
-                    <div className='flex justify-end'>
                         <Link to ='/about' className='btn btn-ghost btn-sm rounded-btn'>
                             About
                         </Link>
