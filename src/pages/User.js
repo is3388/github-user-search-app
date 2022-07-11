@@ -3,20 +3,31 @@ import GithubContext from '../context/github/GithubContext'
 import {useParams, Link} from 'react-router-dom'
 import { FaCodepen, FaStore, FaUserFriends, FaUsers } from 'react-icons/fa'
 import Spinner from '../components/layout/Spinner'
+import {getUser, getRepos} from '../context/github/GithubActions'
 import RepoList from '../components/repos/RepoList'
 
 // version 5 passing match as prop, match.params.login
 function User () {
 
     // get the user state and getUser function from context
-    const {user, getUser, repos, getRepos, loading} = useContext(GithubContext)
+    const {user, repos, loading, dispatch} = useContext(GithubContext)
     const params = useParams()
 
     useEffect(() => {
         
-        getUser(params.login)  
-        getRepos(params.login) 
-    }, [])
+       dispatch({type: 'SET_LOADING'}) 
+       const getUserData = async() => {
+        const userData = await getUser(params.login)
+        dispatch({type: 'GET_USER', 
+                  payload: userData})
+                  
+        const userRepoData = await getRepos(params.login)
+        dispatch({type: 'GET_REPOS', 
+                  payload: userRepoData})
+                  
+       }
+       getUserData()  
+    }, [dispatch, params.login])
 
     const {
         name,

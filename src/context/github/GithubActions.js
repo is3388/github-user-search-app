@@ -18,5 +18,41 @@
         const {items} = await response.json() // data.items is an array
         return items
     }
+
+        // get specific user
+    export const getUser = async (login) => {
+        
+            const response = await fetch(`${GITHUB_URL}/users/${login}`, 
+            {
+                headers: {
+                    Authorization: `token ${GITHUB_TOKEN}`
+                }
+            })
+    
+            if(response.status === 404)
+            {
+                window.location = '/notfound'
+            }
+            else 
+            {
+                const data = await response.json() // data.items is an array
+                return data
+            }
+            
+        }
+    
+        // get user repos
+    export const getRepos = async (login) => {
+        const params = new URLSearchParams({sort: 'created', per_page: 10})
+        
+        const response = await fetch(`${GITHUB_URL}/users/${login}/repos?${params}`, 
+        {
+            headers: {
+                Authorization: `token ${GITHUB_TOKEN}`
+            }
+        })
+        const data = await response.json() // data.items is an array
+        return data
+    }
     
 
