@@ -12,7 +12,7 @@ export const GithubProvider = ({ children }) =>
     //const [users, setUsers] = useState([])
     //const [loading, setLoading] = useState(true)
     // initialState include an array of users, specific user and loading state
-    const initialState = { users: [], user: {}, loading: false }
+    const initialState = { users: [], user: {}, repos: [], loading: false }
     const [state, dispatch] = useReducer(githubReducer, initialState)
 
     //  Get search results
@@ -65,6 +65,25 @@ export const GithubProvider = ({ children }) =>
         
     }
 
+    // get user repos
+    const getRepos = async (login) => {
+        const params = new URLSearchParams({sort: 'created', per_page: 10})
+        setLoading()
+        const response = await fetch(`${GITHUB_URL}/users/${login}/repos?${params}`, 
+        {
+            headers: {
+                Authorization: `token ${GITHUB_TOKEN}`
+            }
+        })
+        const data = await response.json() // data.items is an array
+        //setUsers(data)
+        //setLoading(false)
+        dispatch({
+            type: 'GET_REPOS',
+            payload: data
+        })    
+    }
+
 
     // clear users from state
     const clearUsers = () => {
@@ -77,7 +96,7 @@ export const GithubProvider = ({ children }) =>
         dispatch({ type: 'SET_LOADING'})
     }
     
-    return <GithubContext.Provider value={{ users: state.users, user: state.user, loading: state.loading , searchUsers, getUser, clearUsers }}>
+    return <GithubContext.Provider value={{ users: state.users, user: state.user, repos: state.repos, loading: state.loading , searchUsers, getUser, getRepos, clearUsers }}>
         {children}
     </GithubContext.Provider>
 
